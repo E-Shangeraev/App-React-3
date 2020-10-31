@@ -7,3 +7,9 @@
   background-color: rgb(71, 28, 28);
   border: none;
 }
+
+.app {
+  background: blue url('got.jpeg') center center no-repeat;
+  background-size: cover;
+  height: 1000px;	
+}

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ItemList from '../itemList';
-import CharDetails, {Field} from '../charDetails';
+import ItemDetails, {Field} from '../itemDetails';
 import ErrorMessage from '../errorMessage';
 import RowBlock from '../rowBlock';
 import gotService from '../../services/gotService';
@@ -37,17 +37,19 @@ export default class CharPage extends Component {
         renderItem={({name, gender}) => `${name} (${gender})`}/>
     );
 
-    const charDetails = (
-      <CharDetails charId={this.state.selectedChar}>
-        <Field field='gender' label='Gender'/>
-        <Field field='born' label='Born'/>
-        <Field field='died' label='Died'/>
-        <Field field='culture' label='Culture'/>
-      </CharDetails>
+    const itemDetails = (
+      <ItemDetails 
+        itemId={this.state.selectedChar}
+        getData={this.gotService.getChar}>
+          <Field field='gender' label='Gender'/>
+          <Field field='born' label='Born'/>
+          <Field field='died' label='Died'/>
+          <Field field='culture' label='Culture'/>
+      </ItemDetails>
     )
   
     return (
-      <RowBlock left={itemList} right={charDetails}/>
+      <RowBlock left={itemList} right={itemDetails}/>
     )
   }
 }

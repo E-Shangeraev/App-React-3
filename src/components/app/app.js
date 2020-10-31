@@ -3,16 +3,15 @@ import {Col, Row, Container} from 'reactstrap';
 import Header from '../header';
 import RandomChar from '../randomChar';
 import ErrorMessage from '../errorMessage';
-import CharPage from '../pages';
-import ItemList from '../itemList';
-import CharDetails from '../charDetails';
+import { CharPage, BooksPage, BooksItem, HousesPage } from '../pages';
 import gotService from '../../services/gotService';
+import {BrowserRouter as Router, Route} from 'react-router-dom';
 import './app.css';
 export default class App extends Component {
     gotService = new gotService();
 
     state = {
-        showChar: true,
+        showRandomChar: true,
         error: false,
     }
 
@@ -25,7 +24,7 @@ export default class App extends Component {
     toggleChar = () => {
         this.setState(state => {
             return {
-                showChar: !state.showChar
+                showRandomChar: !state.showRandomChar
             }
         });
     }
@@ -34,49 +33,38 @@ export default class App extends Component {
         if (this.state.error) {
             return <ErrorMessage/>
         }
-        const char = this.state.showChar ? <RandomChar/> : null;
+        const char = this.state.showRandomChar ? <RandomChar/> : null;
 
         return (
-            <> 
-                <Container>
-                    <Header />
-                </Container>
-                <Container>
-                    <Row>
-                        <Col lg={{size: 5, offset: 0}}>
-                            {char}
-                            <button
-                                className="toggle-btn"
-                                onClick={this.toggleChar}>
-                                Toggle character
-                            </button>
-                        </Col>
-                    </Row>
-                    <CharPage/>
-                    <Row>
-                        <Col md='6'>
-                        <ItemList 
-                            onItemSelected={this.onItemSelected}
-                            getData={this.gotService.getAllBooks}
-                            renderItem={item => item.name}/>
-                        </Col>
-                        <Col md='6'>
-                            <CharDetails charId={this.state.selectedChar}/>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col md='6'>
-                        <ItemList 
-                            onItemSelected={this.onItemSelected}
-                            getData={this.gotService.getAllHouses}
-                            renderItem={item => item.name}/>
-                        </Col>
-                        <Col md='6'>
-                            <CharDetails charId={this.state.selectedChar}/>
-                        </Col>
-                    </Row>
-                </Container>
-            </>
+            <Router>
+                <div className="app"> 
+                    <Container>
+                        <Header />
+                    </Container>
+                    <Container>
+                        <Row>
+                            <Col lg={{size: 5, offset: 0}}>
+                                {char}
+                                <button
+                                    className="toggle-btn"
+                                    onClick={this.toggleChar}>
+                                    Toggle character
+                                </button>
+                            </Col>
+                        </Row>
+                        <Route path="/" exact component={() => <h1>Welcome to GOT DB</h1>}/>
+                        <Route path="/characters" component={CharPage}/>
+                        <Route path="/houses" component={HousesPage}/>
+                        <Route path="/books" exact component={BooksPage}/>
+                        <Route path="/books/:id" render={
+                            ({match}) => {
+                                const {id} = match.params;
+                            return <BooksItem bookId={id}/>
+                            }
+                        }/>
+                    </Container>
+                </div>
+            </Router>
         );
     }
 }
